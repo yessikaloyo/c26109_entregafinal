@@ -79,12 +79,16 @@
     backdrop-filter:blur(8px);
     border-bottom:1px solid var(--border);
   }
-  nav.toc .wrap{display:flex; gap:4px; overflow-x:auto; padding:10px 24px; max-width:1100px;}
+  nav.toc .wrap{display:flex; gap:8px; overflow-x:auto; padding:10px 24px; max-width:1100px;}
   nav.toc a{
     white-space:nowrap; font-size:13px; font-weight:600; color:var(--ink-2);
     text-decoration:none; padding:8px 14px; border-radius:999px;
+    background:var(--surface); border:1px solid var(--border);
+    box-shadow:0 1px 2px rgba(30,20,10,.04);
+    transition:background .15s, color .15s, border-color .15s;
   }
-  nav.toc a:hover{background:var(--surface-2); color:var(--ink);}
+  nav.toc a:hover{background:var(--coral-soft); color:var(--coral-ink); border-color:color-mix(in srgb, var(--coral) 35%, var(--border));}
+  nav.toc a.active{background:var(--coral); color:#fff; border-color:var(--coral);}
 
   section{padding:56px 24px;}
   section.alt{background:var(--surface);}
@@ -408,3 +412,22 @@
 <footer>
   Trabajo Técnico TT26109 · Yessika Loyo · Gráficos generados con Plotly (interactivos, hover para ver detalle) · <a class="top" href="https://colab.research.google.com/drive/1cfHH_ID_dIyi1DiJCJH9u_ov4PKa7hUY?usp=drive_link" target="_blank" rel="noopener">notebook en Colab</a> · <a class="top" href="#top">volver arriba ↑</a>
 </footer>
+
+<script>
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+    var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    if(!sections.length) return;
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = links[sections.indexOf(entry.target)];
+        if(!link) return;
+        if(entry.isIntersecting){
+          links.forEach(function(l){ l.classList.remove('active'); });
+          link.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-40% 0px -55% 0px', threshold:0});
+    sections.forEach(function(s){ observer.observe(s); });
+  })();
+</script>
