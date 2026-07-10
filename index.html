@@ -1,0 +1,400 @@
+<title>Impacto de Campañas RRSS en Ventas</title>
+<style>
+  :root{
+    --bg:#f7f5f3;
+    --surface:#ffffff;
+    --surface-2:#f1eeea;
+    --border:#e4ddd6;
+    --ink:#2a2420;
+    --ink-2:#5c5249;
+    --ink-muted:#8a8078;
+    --coral:#FF7F50;
+    --coral-ink:#c9532a;
+    --coral-soft:#ffe6da;
+    --dark:#4A4A4A;
+    --good:#2f8f5b;
+    --bad:#c94f3f;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(30,20,10,.05), 0 8px 24px rgba(30,20,10,.06);
+  }
+  :root[data-theme="dark"]{
+    --bg:#171310;
+    --surface:#211c18;
+    --surface-2:#2a231e;
+    --border:#3a3128;
+    --ink:#f3ede6;
+    --ink-2:#c9beb2;
+    --ink-muted:#948578;
+    --coral:#FF8F63;
+    --coral-ink:#ffb08c;
+    --coral-soft:#3a2418;
+    --dark:#c9c9c9;
+    --good:#5cbf8a;
+    --bad:#e2796a;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171310; --surface:#211c18; --surface-2:#2a231e; --border:#3a3128;
+      --ink:#f3ede6; --ink-2:#c9beb2; --ink-muted:#948578;
+      --coral:#FF8F63; --coral-ink:#ffb08c; --coral-soft:#3a2418; --dark:#c9c9c9;
+      --good:#5cbf8a; --bad:#e2796a;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
+
+  /* ---- Hero ---- */
+  .hero{
+    padding:72px 24px 56px;
+    background:
+      radial-gradient(1200px 400px at 20% -10%, var(--coral-soft), transparent 60%),
+      var(--surface);
+    border-bottom:1px solid var(--border);
+  }
+  .hero .wrap{max-width:1000px;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--coral-ink); background:var(--coral-soft);
+    padding:6px 12px; border-radius:999px; margin-bottom:20px;
+  }
+  h1{font-size:clamp(28px,4vw,42px); margin:0 0 14px; letter-spacing:-.02em;}
+  .hero p.sub{font-size:18px; color:var(--ink-2); max-width:640px; margin:0 0 28px;}
+  .hero-meta{display:flex; gap:24px; flex-wrap:wrap; font-size:14px; color:var(--ink-muted);}
+  .hero-meta strong{color:var(--ink-2); font-weight:600;}
+
+  /* ---- Nav dots ---- */
+  nav.toc{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  nav.toc .wrap{display:flex; gap:4px; overflow-x:auto; padding:10px 24px; max-width:1100px;}
+  nav.toc a{
+    white-space:nowrap; font-size:13px; font-weight:600; color:var(--ink-2);
+    text-decoration:none; padding:8px 14px; border-radius:999px;
+  }
+  nav.toc a:hover{background:var(--surface-2); color:var(--ink);}
+
+  section{padding:56px 24px;}
+  section.alt{background:var(--surface);}
+  .section-head{max-width:720px; margin:0 0 32px;}
+  .kicker{font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--coral-ink); margin:0 0 8px;}
+  h2{font-size:clamp(22px,3vw,30px); margin:0 0 10px; letter-spacing:-.01em;}
+  .section-head p{color:var(--ink-2); margin:0; font-size:15.5px;}
+
+  /* ---- KPI tiles ---- */
+  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:8px;}
+  .kpi-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .kpi-tile .label{font-size:12.5px; color:var(--ink-muted); font-weight:600; text-transform:uppercase; letter-spacing:.03em;}
+  .kpi-tile .value{font-size:28px; font-weight:700; margin:6px 0 4px; letter-spacing:-.01em;}
+  .kpi-tile .value.good{color:var(--good);}
+  .kpi-tile .value.bad{color:var(--bad);}
+  .kpi-tile .value.coral{color:var(--coral-ink);}
+  .kpi-tile .note{font-size:13px; color:var(--ink-2);}
+
+  /* ---- Chart card ---- */
+  .chart-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:8px 8px 4px; margin:28px 0;
+    overflow-x:auto;
+  }
+  .chart-card > div{min-width:560px;}
+
+  /* ---- Insight cards ---- */
+  .insights{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:24px;}
+  .insight{
+    background:var(--surface-2); border:1px solid var(--border); border-left:3px solid var(--coral);
+    border-radius:10px; padding:16px 18px;
+  }
+  .insight h4{margin:0 0 6px; font-size:14.5px; display:flex; align-items:center; gap:8px;}
+  .insight p{margin:0; font-size:14px; color:var(--ink-2);}
+  .insight .tag{
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--coral-ink); background:var(--coral-soft); padding:2px 8px; border-radius:999px;
+  }
+
+  /* ---- ranking table ---- */
+  .rank-cols{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px;}
+  @media (max-width:680px){.rank-cols{grid-template-columns:1fr;}}
+  .rank-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);}
+  .rank-card h4{margin:0 0 4px; font-size:14px;}
+  .rank-card .sub{font-size:12.5px; color:var(--ink-muted); margin:0 0 14px;}
+  .rank-row{display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13.5px;}
+  .rank-row:last-child{border-bottom:none;}
+  .rank-row .name{color:var(--ink);}
+  .rank-row .pct{font-weight:700; font-variant-numeric:tabular-nums;}
+  .pct.good{color:var(--good);} .pct.bad{color:var(--bad);}
+
+  /* ---- callout ---- */
+  .callout{
+    background:var(--coral-soft); border:1px solid color-mix(in srgb, var(--coral) 35%, var(--border));
+    border-radius:var(--radius); padding:18px 22px; margin-top:24px; font-size:14.5px; color:var(--ink);
+  }
+  .callout strong{color:var(--coral-ink);}
+
+  footer{padding:40px 24px 60px; text-align:center; color:var(--ink-muted); font-size:13px;}
+
+  a.top{color:var(--coral-ink); text-decoration:none; font-weight:600;}
+</style>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <span class="eyebrow">Trabajo Técnico · Análisis de Datos</span>
+    <h1>Impacto de las campañas de RRSS en las ventas</h1>
+    <p class="sub">Comparativa interactiva entre productos en campaña y fuera de campaña: rendimiento por producto, evolución mensual, costos de marketing y eficiencia de la inversión.</p>
+    <div class="hero-meta">
+      <span><strong>Estudiante:</strong> Yessika Loyo</span>
+      <span><strong>Fuentes:</strong> clientes · ventas · marketing (canal RRSS)</span>
+      <span><strong>Periodo:</strong> 12 meses</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#kpis">KPIs</a>
+    <a href="#tiempo">Evolución mensual</a>
+    <a href="#producto">Ventas por producto</a>
+    <a href="#costos">Ventas vs. costos</a>
+    <a href="#conclusiones">Conclusiones</a>
+  </div>
+</nav>
+
+<section id="kpis">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Visualización 1</p>
+      <h2>KPIs generales de la campaña RRSS</h2>
+      <p>Panorama global: cuánto se vendió en promedio dentro y fuera de campaña, y cuánto costó sostener la inversión publicitaria.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-tile">
+        <div class="label">Venta promedio en campaña</div>
+        <div class="value coral">$475.19</div>
+        <div class="note">por transacción atribuida a RRSS</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="label">Venta promedio fuera de campaña</div>
+        <div class="value">$490.73</div>
+        <div class="note">ventas orgánicas, sin campaña activa</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="label">Costo total de marketing RRSS</div>
+        <div class="value">$150.91</div>
+        <div class="note">inversión acumulada del canal</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="label">ROAS de la campaña</div>
+        <div class="value good">93.52x</div>
+        <div class="note">por cada $1 invertido</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>                <div id="c8680c17-70a5-4846-8e3e-d657e69987ac" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("c8680c17-70a5-4846-8e3e-d657e69987ac")) {                    Plotly.newPlot(                        "c8680c17-70a5-4846-8e3e-d657e69987ac",                        [{"mode":"number","number":{"prefix":"$","valueformat":",.2f"},"title":{"text":"Venta promedio\u003cbr\u003eEn campaña"},"value":475.18757575757576,"type":"indicator","domain":{"x":[0.0,0.2888888888888889],"y":[0.0,1.0]}},{"mode":"number","number":{"prefix":"$","valueformat":",.2f"},"title":{"text":"Venta promedio\u003cbr\u003eFuera de campaña"},"value":490.7256766642282,"type":"indicator","domain":{"x":[0.35555555555555557,0.6444444444444445],"y":[0.0,1.0]}},{"mode":"number","number":{"prefix":"$","valueformat":",.2f"},"title":{"text":"Costo marketing\u003cbr\u003eRRSS"},"value":150.91000000000003,"type":"indicator","domain":{"x":[0.7111111111111111,1.0],"y":[0.0,1.0]}}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"font":{"size":20,"color":"coral"},"text":"KPIs generales - Campañas RRSS","x":0.5},"height":400,"paper_bgcolor":"white","plot_bgcolor":"lightgray"},                        {"responsive": true}                    )                };                            </script>        </div></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Brecha de valor estrecha:</strong> la venta promedio en campaña ($475.19) es apenas ~3% menor que fuera de ella ($490.73). RRSS mueve volumen masivo de transacciones con un ticket promedio ligeramente más conservador, no un ticket premium.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Inversión casi marginal:</strong> ~$150 en costo total de marketing frente a $14,166.82 en venta promedio acumulada por producto implica un ROI de 9,251.85% y un ROAS de 93.52x — cada peso invertido en RRSS retorna más de 93 veces su valor en ventas.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Lectura ampliada</span></h4>
+        <p><strong>Volumen antes que ticket:</strong> como el promedio por venta no sube durante la campaña, la rentabilidad extrema del ROAS se explica por <em>frecuencia</em> de compra impulsada, no por precio. RRSS funciona como motor de tráfico, no de upselling.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tiempo" class="alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Visualización 2 · Serie de tiempo</p>
+      <h2>Evolución mensual de la venta promedio</h2>
+      <p>Comparación mes a mes entre ventas dentro y fuera de campaña a lo largo del año, incluyendo los meses sin campañas activas (enero–febrero).</p>
+    </div>
+
+    <div class="chart-card">
+      <div><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>                <div id="b1c37c40-a55b-4cb4-b0ed-afd8daa7f9c5" class="plotly-graph-div" style="height:500px; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("b1c37c40-a55b-4cb4-b0ed-afd8daa7f9c5")) {                    Plotly.newPlot(                        "b1c37c40-a55b-4cb4-b0ed-afd8daa7f9c5",                        [{"hovertemplate":"Estado=Fuera de campaña\u003cbr\u003eMes=%{x}\u003cbr\u003eVenta promedio ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"Fuera de campaña","line":{"color":"gray","dash":"solid"},"marker":{"symbol":"circle"},"mode":"lines+markers","name":"Fuera de campaña","orientation":"v","showlegend":true,"x":[1,2,3,4,5,6,7,8,9,10,11,12],"xaxis":"x","y":[483.6007089552239,478.51790322580644,514.3902671755725,467.23745173745175,530.9832489451477,482.69457286432163,484.3422119815668,465.311884057971,499.24106280193234,478.9387434554974,502.9397747747748,496.7185253456221],"yaxis":"y","type":"scatter"},{"hovertemplate":"Estado=En campaña\u003cbr\u003eMes=%{x}\u003cbr\u003eVenta promedio ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"En campaña","line":{"color":"coral","dash":"solid"},"marker":{"symbol":"circle"},"mode":"lines+markers","name":"En campaña","orientation":"v","showlegend":true,"x":[3,4,5,6,7,8,9,10,11,12],"xaxis":"x","y":[669.6333333333333,463.51187500000003,470.63736842105266,564.725,427.9888461538461,497.033829787234,366.0279411764706,529.2264102564102,436.7978947368421,492.201],"yaxis":"y","type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Mes"},"dtick":1},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Venta promedio ($)"}},"legend":{"title":{"text":"Estado"},"tracegroupgap":0},"title":{"text":"Evolución mensual de la venta promedio - RRSS"},"height":500},                        {"responsive": true}                    )                };                            </script>        </div></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Pico de marzo:</strong> el mes 3 registra el mayor promedio en campaña ($669.63), muy por encima del resto del año — el punto de mayor éxito de RRSS en todo el período.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Volatilidad vs. estabilidad:</strong> la línea "En campaña" oscila con fuerza (de $366 en septiembre a $669 en marzo), mientras "Fuera de campaña" se mantiene en una banda mucho más angosta ($465–$531), reflejando un comportamiento de compra orgánico más predecible.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Meses de bajo rendimiento:</strong> en junio–septiembre la línea en campaña cae por debajo o roza la orgánica (septiembre: $366.03 vs $499.24), sugiriendo fatiga publicitaria o creatividades poco efectivas en ese tramo.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Lectura ampliada</span></h4>
+        <p><strong>Sin cobertura total del año:</strong> no hay serie "En campaña" para enero-febrero — las campañas RRSS solo cubren de marzo a diciembre. Cualquier comparación anualizada debe normalizarse a esos 10 meses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="producto">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Barplot 1 · Visualización 3</p>
+      <h2>Ventas promedio por producto: dentro vs. fuera de campaña</h2>
+      <p>Los 30 productos del catálogo, ordenados de mayor a menor venta promedio en campaña, comparados contra su desempeño orgánico.</p>
+    </div>
+
+    <div class="chart-card">
+      <div><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>                <div id="46607516-7f08-4436-97dc-994caaddb11c" class="plotly-graph-div" style="height:550px; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("46607516-7f08-4436-97dc-994caaddb11c")) {                    Plotly.newPlot(                        "46607516-7f08-4436-97dc-994caaddb11c",                        [{"alignmentgroup":"True","hovertemplate":"Estado=En campaña\u003cbr\u003eProducto=%{x}\u003cbr\u003eVenta promedio ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"En campaña","marker":{"color":"#FF7F50","pattern":{"shape":""}},"name":"En campaña","offsetgroup":"En campaña","orientation":"v","showlegend":true,"textposition":"auto","x":["Microondas","Heladera","Elementos de cerámica","Adorno de pared","Televisor","Rincón de plantas","Parlantes Bluetooth","Smartphone","Alfombra","Secadora","Consola de videojuegos","Candelabro","Horno eléctrico","Cuadro decorativo","Cámara digital","Jarrón decorativo","Batidora","Auriculares","Lavadora","Lámpara de mesa","Proyector","Tablet","Aspiradora","Espejo decorativo","SmartWatch","Cafetera","Cortinas","Plancha de vapor","Laptop","Freidora eléctrica"],"xaxis":"x","y":[805.875,668.595,664.9766666666667,593.4527272727272,571.9975000000001,569.952,561.6828571428571,560.314375,552.8944444444445,547.428,545.56125,507.59799999999996,472.40090909090907,464.5466666666667,456.380625,451.2791666666667,441.41076923076923,436.78785714285715,431.591,423.841,422.595,418.7011111111111,411.41777777777776,383.31583333333333,356.23999999999995,354.815,334.17125,295.46625,262.17499999999995,199.36],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"Estado=Fuera de campaña\u003cbr\u003eProducto=%{x}\u003cbr\u003eVenta promedio ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"Fuera de campaña","marker":{"color":"#4A4A4A","pattern":{"shape":""}},"name":"Fuera de campaña","offsetgroup":"Fuera de campaña","orientation":"v","showlegend":true,"textposition":"auto","x":["Cuadro decorativo","Smartphone","Microondas","Auriculares","Heladera","Batidora","Secadora","Jarrón decorativo","Cafetera","Aspiradora","Freidora eléctrica","Horno eléctrico","Rincón de plantas","Lavadora","Proyector","SmartWatch","Espejo decorativo","Parlantes Bluetooth","Laptop","Lámpara de mesa","Adorno de pared","Plancha de vapor","Consola de videojuegos","Cortinas","Televisor","Elementos de cerámica","Candelabro","Cámara digital","Tablet","Alfombra"],"xaxis":"x","y":[556.8164705882353,531.3812941176471,529.308320610687,527.6011627906977,524.1459090909091,520.0098850574713,519.7716842105262,519.4946590909091,514.9384955752213,509.7043956043956,504.6039393939394,502.4437078651685,495.90302083333336,495.8947777777778,492.3762637362637,483.45729166666666,479.3581818181818,475.18928571428575,470.11229166666664,470.1082530120482,467.028202247191,465.575,459.4496703296703,458.605,456.52352272727273,452.2516666666666,452.14789473684215,451.37940476190477,450.78081632653056,437.3297802197802],"yaxis":"y","type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Producto"},"categoryorder":"array","categoryarray":["Microondas","Elementos de cerámica","Heladera","Adorno de pared","Alfombra","Televisor","Parlantes Bluetooth","Consola de videojuegos","Rincón de plantas","Candelabro","Smartphone","Secadora","Cámara digital","Horno eléctrico","Tablet","Lámpara de mesa","Lavadora","Jarrón decorativo","Proyector","Batidora","Auriculares","Cuadro decorativo","Espejo decorativo","Aspiradora","Cortinas","SmartWatch","Cafetera","Plancha de vapor","Laptop","Freidora eléctrica"],"tickangle":-45},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Venta promedio ($)"}},"legend":{"title":{"text":"Estado"},"tracegroupgap":0},"title":{"text":"Venta promedio por producto: en campaña vs fuera de campaña - RRSS"},"barmode":"group","height":550},                        {"responsive": true}                    )                };                            </script>        </div></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Dominancia del Microondas:</strong> es el producto estrella en RRSS, con $805.88 de venta promedio en campaña — 52.3% por encima de su promedio orgánico ($529.31).</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Segmentación clara:</strong> el gráfico permite distinguir de un vistazo qué productos "ignorar" en futuras campañas — aquellos donde la barra gris (fuera de campaña) supera a la coral (en campaña).</p>
+      </div>
+    </div>
+
+    <div class="rank-cols">
+      <div class="rank-card">
+        <h4>🚀 Mayor impulso por campaña</h4>
+        <p class="sub">Variación % de venta promedio, en campaña vs. fuera de ella</p>
+        <div class="rank-row"><span class="name">Microondas</span><span class="pct good">+52.3%</span></div>
+        <div class="rank-row"><span class="name">Elementos de cerámica</span><span class="pct good">+47.0%</span></div>
+        <div class="rank-row"><span class="name">Heladera</span><span class="pct good">+27.6%</span></div>
+        <div class="rank-row"><span class="name">Adorno de pared</span><span class="pct good">+27.1%</span></div>
+        <div class="rank-row"><span class="name">Alfombra</span><span class="pct good">+26.4%</span></div>
+      </div>
+      <div class="rank-card">
+        <h4>📉 Rendimiento negativo en campaña</h4>
+        <p class="sub">Productos que venden menos estando en campaña</p>
+        <div class="rank-row"><span class="name">Cortinas</span><span class="pct bad">−27.1%</span></div>
+        <div class="rank-row"><span class="name">Cafetera</span><span class="pct bad">−31.1%</span></div>
+        <div class="rank-row"><span class="name">Plancha de vapor</span><span class="pct bad">−36.5%</span></div>
+        <div class="rank-row"><span class="name">Laptop</span><span class="pct bad">−44.2%</span></div>
+        <div class="rank-row"><span class="name">Freidora eléctrica</span><span class="pct bad">−60.5%</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Insight ampliado:</strong> los cinco productos con caída más pronunciada en campaña (Cortinas, Cafetera, Plancha de vapor, Laptop y Freidora eléctrica) son artículos de compra racional o de reposición, poco propensos a decisiones impulsivas por publicidad en RRSS. El presupuesto destinado a promocionarlos probablemente rinde mejor reasignado a productos de "compra impulso" como Microondas, Elementos de cerámica y Heladera, donde el canal sí demuestra tracción real.
+    </div>
+  </div>
+</section>
+
+<section id="costos" class="alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Barplot 2 · Visualización 4</p>
+      <h2>Venta promedio y costo de marketing por producto</h2>
+      <p>Relación entre lo generado en ventas y lo invertido en campañas activas por producto. Usa el botón "Apilado" para ver la proporción costo/venta de cada producto.</p>
+    </div>
+
+    <div class="chart-card">
+      <div><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>                <div id="9707b140-2064-4e34-9f1c-d3022e8a6a8b" class="plotly-graph-div" style="height:550px; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("9707b140-2064-4e34-9f1c-d3022e8a6a8b")) {                    Plotly.newPlot(                        "9707b140-2064-4e34-9f1c-d3022e8a6a8b",                        [{"alignmentgroup":"True","hovertemplate":"Métrica=venta_neta_avg\u003cbr\u003eProducto=%{x}\u003cbr\u003eMonto ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"venta_neta_avg","marker":{"color":"#FF7F50","pattern":{"shape":""}},"name":"venta_neta_avg","offsetgroup":"venta_neta_avg","orientation":"v","showlegend":true,"textposition":"auto","x":["Microondas","Heladera","Elementos de cerámica","Adorno de pared","Televisor","Rincón de plantas","Parlantes Bluetooth","Smartphone","Alfombra","Secadora","Consola de videojuegos","Candelabro","Horno eléctrico","Cuadro decorativo","Cámara digital","Jarrón decorativo","Batidora","Auriculares","Lavadora","Lámpara de mesa","Proyector","Tablet","Aspiradora","Espejo decorativo","SmartWatch","Cafetera","Cortinas","Plancha de vapor","Laptop","Freidora eléctrica"],"xaxis":"x","y":[805.875,668.595,664.9766666666667,593.4527272727272,571.9975000000001,569.952,561.6828571428571,560.314375,552.8944444444445,547.428,545.56125,507.59799999999996,472.40090909090907,464.5466666666667,456.380625,451.2791666666667,441.41076923076923,436.78785714285715,431.591,423.841,422.595,418.7011111111111,411.41777777777776,383.31583333333333,356.23999999999995,354.815,334.17125,295.46625,262.17499999999995,199.36],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"Métrica=costo_sum\u003cbr\u003eProducto=%{x}\u003cbr\u003eMonto ($)=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"costo_sum","marker":{"color":"#4A4A4A","pattern":{"shape":""}},"name":"costo_sum","offsetgroup":"costo_sum","orientation":"v","showlegend":true,"textposition":"auto","x":["Microondas","Heladera","Elementos de cerámica","Adorno de pared","Televisor","Rincón de plantas","Parlantes Bluetooth","Smartphone","Alfombra","Secadora","Consola de videojuegos","Candelabro","Horno eléctrico","Cuadro decorativo","Cámara digital","Jarrón decorativo","Batidora","Auriculares","Lavadora","Lámpara de mesa","Proyector","Tablet","Aspiradora","Espejo decorativo","SmartWatch","Cafetera","Cortinas","Plancha de vapor","Laptop","Freidora eléctrica"],"xaxis":"x","y":[20.0,18.12,16.32,45.760000000000005,47.519999999999996,24.4,84.0,101.92,52.38,25.5,25.28,26.6,56.760000000000005,79.05,87.36,55.800000000000004,58.75999999999999,84.83999999999999,35.6,58.8,44.56,30.599999999999998,64.44,57.0,19.36,22.8,41.76,32.16,18.72,5.27],"yaxis":"y","type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Producto"},"tickangle":-45},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Monto ($)"}},"legend":{"title":{"text":"Métrica"},"tracegroupgap":0},"title":{"text":"Venta promedio y costo de marketing por producto - Campañas RRSS activas"},"barmode":"group","height":550,"updatemenus":[{"buttons":[{"args":[{"barmode":"group"}],"label":"Agrupado","method":"relayout"},{"args":[{"barmode":"stack"}],"label":"Apilado","method":"relayout"}],"direction":"right","showactive":true,"type":"buttons","x":1.0,"y":1.15}]},                        {"responsive": true}                    )                };                            </script>        </div></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Márgenes de contribución amplios:</strong> el costo de campaña (barra gris) es ínfimo frente al volumen de venta (barra coral) para casi todos los productos — el mayor costo individual (Smartphone, $101.92) sigue siendo menor al 20% de su venta promedio.</p>
+      </div>
+      <div class="insight">
+        <h4><span class="tag">Hallazgo</span></h4>
+        <p><strong>Espacio para escalar inversión:</strong> dado que el costo por producto es casi imperceptible en la escala de ingresos, hay margen amplio para incrementar el presupuesto publicitario en los productos líderes sin comprometer la rentabilidad.</p>
+      </div>
+    </div>
+
+    <div class="rank-cols">
+      <div class="rank-card">
+        <h4>💰 Mejor eficiencia venta/costo</h4>
+        <p class="sub">Veces que la venta promedio cubre el costo de campaña</p>
+        <div class="rank-row"><span class="name">Elementos de cerámica</span><span class="pct good">40.7x</span></div>
+        <div class="rank-row"><span class="name">Microondas</span><span class="pct good">40.3x</span></div>
+        <div class="rank-row"><span class="name">Freidora eléctrica</span><span class="pct good">37.8x</span></div>
+        <div class="rank-row"><span class="name">Heladera</span><span class="pct good">36.9x</span></div>
+        <div class="rank-row"><span class="name">Rincón de plantas</span><span class="pct good">23.4x</span></div>
+      </div>
+      <div class="rank-card">
+        <h4>⚠️ Menor eficiencia venta/costo</h4>
+        <p class="sub">Productos con mayor costo relativo a su venta</p>
+        <div class="rank-row"><span class="name">Aspiradora</span><span class="pct bad">6.4x</span></div>
+        <div class="rank-row"><span class="name">Cuadro decorativo</span><span class="pct bad">5.9x</span></div>
+        <div class="rank-row"><span class="name">Smartphone</span><span class="pct bad">5.5x</span></div>
+        <div class="rank-row"><span class="name">Cámara digital</span><span class="pct bad">5.2x</span></div>
+        <div class="rank-row"><span class="name">Auriculares</span><span class="pct bad">5.1x</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Insight ampliado — "vacas lecheras" digitales:</strong> Elementos de cerámica y Microondas combinan alto volumen de venta con costo de campaña muy bajo (ratio > 40x), consolidándose como los productos más rentables de anunciar en RRSS. En el otro extremo, Auriculares y Cámara digital, aun vendiendo bien, exigen un costo de marketing proporcionalmente alto (ratio ≈ 5x) — probablemente por mayor competencia o costo por clic en esas categorías — por lo que su inversión debería vigilarse de cerca antes de escalarla.
+    </div>
+  </div>
+</section>
+
+<section id="conclusiones">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Cierre</p>
+      <h2>Conclusiones y recomendaciones</h2>
+      <p>Síntesis de los cuatro análisis interactivos y próximos pasos sugeridos para optimizar la inversión en RRSS.</p>
+    </div>
+
+    <div class="insights">
+      <div class="insight">
+        <h4>1. RRSS es motor de volumen, no de ticket</h4>
+        <p>La venta promedio por transacción no mejora en campaña; el retorno viene de mover más unidades, no de vender más caro.</p>
+      </div>
+      <div class="insight">
+        <h4>2. La inversión global es extremadamente eficiente</h4>
+        <p>ROAS de 93.52x y ROI de 9,251.85% dejan un margen amplio para escalar presupuesto sin erosionar rentabilidad.</p>
+      </div>
+      <div class="insight">
+        <h4>3. No todos los productos responden igual</h4>
+        <p>Microondas, Elementos de cerámica y Heladera se disparan en campaña; Freidora eléctrica, Laptop y Plancha de vapor caen — priorizar presupuesto por categoría de compra (impulso vs. racional).</p>
+      </div>
+      <div class="insight">
+        <h4>4. Revisar meses de fatiga publicitaria</h4>
+        <p>El desplome de junio a septiembre (mínimo en septiembre) sugiere renovar creatividades o pausar campañas de bajo rendimiento estacional.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:28px;">
+      <strong>Recomendación general:</strong> reasignar parte del presupuesto de productos con eficiencia venta/costo baja (Auriculares, Cámara digital, Smartphone) hacia los de mayor tracción comprobada (Microondas, Elementos de cerámica, Heladera), y planificar un refresh de campaña entre junio y septiembre para evitar la caída estacional observada en la serie de tiempo.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Trabajo Técnico TT26109 · Yessika Loyo · Gráficos generados con Plotly (interactivos, hover para ver detalle) · <a class="top" href="#top">volver arriba ↑</a>
+</footer>
